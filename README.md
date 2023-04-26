@@ -10,7 +10,7 @@ cat urls.txt | sed 's/FUZZ//g'
 ## PoC
 
 ```sh
-python3 sqli2.py -u urls.txt -d data.txt
+python3 SQLi_Sleeps2.py -u urls.txt -d data.txt
 
 ```
 ![image](https://user-images.githubusercontent.com/66162160/234198892-44835b84-9d06-4280-9a11-7348bfc301f4.png)
