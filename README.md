@@ -1,4 +1,6 @@
 # SQLi_Sleeps
+It is a simple script that allows to find SQLi vulnerabilities, obtaining the response time greater than 20 seconds per medium and time-based injection.
+
 
 ```sh
 usage: sqli2.py [-h] -u URLS -d DATA [-c COOKIE]
