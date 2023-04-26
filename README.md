@@ -3,7 +3,7 @@ It is a simple script that allows to find SQLi vulnerabilities, obtaining the re
 
 
 ```sh
-usage: sqli2.py [-h] -u URLS -d DATA [-c COOKIE]
+usage: SQLi_Sleeps2.py [-h] -u URLS -d DATA [-c COOKIE]
 
 Realiza una petición GET a múltiples URLs con diferentes datos.
 
