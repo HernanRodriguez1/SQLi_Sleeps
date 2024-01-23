@@ -27,4 +27,6 @@ cat urls.txt | sed 's/FUZZ//g'
 python3 SQLi_Sleeps2.py -u urls.txt -d data.txt
 
 ```
-![image](https://user-images.githubusercontent.com/66162160/234198892-44835b84-9d06-4280-9a11-7348bfc301f4.png)
+![image](https://github.com/HernanRodriguez1/SQLi_Sleeps/assets/66162160/cfe04560-b090-440a-837c-479b37394eb8)
+
+
