@@ -2,44 +2,42 @@ import argparse
 import requests
 import time
 
+def perform_request(url, data, cookie):
+    url_with_data = "{}{}".format(url, data)
+    start_time = time.time()
 
-parser = argparse.ArgumentParser(description="Realiza una petición GET a múltiples URLs con diferentes datos.")
-parser.add_argument("-u", "--urls", required=True, help="Archivo de texto con las URLs a las que se les realizará la petición GET.")
-parser.add_argument("-d", "--data", required=True, help="Archivo de texto con los datos que se agregarán a las URLs.")
-parser.add_argument("-c", "--cookie", help="Cookie a incluir en la petición GET.")
-args = parser.parse_args()
+    try:
+        response = requests.get(url_with_data, cookies={'cookie': cookie} if cookie else None)
+        response.raise_for_status()  # Lanza una excepción si la respuesta indica un error HTTP
+    except requests.exceptions.RequestException as e:
+        return False, url_with_data, time.time() - start_time, str(e)
 
+    return True, url_with_data, time.time() - start_time, None
 
-# Abre el archivo de texto con las URLs
-with open(args.urls) as file:
-    urls = file.read().splitlines()
+def main():
+    parser = argparse.ArgumentParser(description="Realiza una petición GET a múltiples URLs con diferentes datos.")
+    parser.add_argument("-u", "--urls", required=True, help="Archivo de texto con las URLs a las que se les realizará la petición GET.")
+    parser.add_argument("-d", "--data", required=True, help="Archivo de texto con los datos que se agregarán a las URLs.")
+    parser.add_argument("-c", "--cookie", help="Cookie a incluir en la petición GET.")
+    args = parser.parse_args()
 
-# Abre el archivo de texto con los datos
-with open(args.data) as file:
-    data = file.read().splitlines()
+    # Lee las URLs y datos desde los archivos
+    with open(args.urls) as file:
+        urls = file.read().splitlines()
 
-# Recorre la lista de URLs
-for url in urls:
-    # Recorre la lista de datos y agrega los valores a la URL
-    for d in data:
-        url_with_data = url + d
+    with open(args.data) as file:
+        data = file.read().splitlines()
 
-        start_time = time.time()  # Obtiene el tiempo actual
+    # Recorre la lista de URLs y datos
+    for url in urls:
+        for d in data:
+            success, url_with_data, response_time, error_message = perform_request(url, d, args.cookie)
 
-        # Realiza la petición GET con la cookie si es que existe
-        try:
-            if args.cookie:
-                response = requests.get(url_with_data, cookies={'cookie': args.cookie})
+            # Imprime la URL y el tiempo de respuesta en color verde o rojo
+            if success and response_time <= 20:
+                print("\033[1;32mURL {} - {:.2f} segundos\033[0m".format(url_with_data, response_time))
             else:
-                response = requests.get(url_with_data)
-        except requests.exceptions.RequestException as e:
-            print("\033[1;31mURL {} - Error: {}\033[0m".format(url_with_data, e))
-            continue
+                print("\033[1;31mURL {} - {:.2f} segundos - Error: {}\033[0m".format(url_with_data, response_time, error_message))
 
-        end_time = time.time()  # Obtiene el tiempo después de la respuesta
-
-        # Imprime la URL y el tiempo de respuesta en color verde o rojo
-        if response.ok and end_time - start_time <= 20:
-            print("\033[1;32mURL {} - {:.2f} segundos\033[0m".format(url_with_data, end_time - start_time))
-        else:
-            print("\033[1;31mURL {} - {:.2f} segundos\033[0m".format(url_with_data, end_time - start_time))
+if __name__ == "__main__":
+    main()
