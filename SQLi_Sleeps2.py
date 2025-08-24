@@ -1,10 +1,18 @@
 import argparse
 import requests
 import time
+import random
 from http.cookies import SimpleCookie
 
+user_agents = [
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
+    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36",
+    "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36",
+    "Mozilla/5.0 (iPhone; CPU iPhone OS 14_0 like Mac OS X) AppleWebKit/605.1.15",
+    "Mozilla/5.0 (Android 10; Mobile; rv:91.0) Gecko/91.0 Firefox/91.0"
+]
+
 def parse_cookie(cookie_string):
-    """Parsea una cadena de cookie en un diccionario"""
     if not cookie_string:
         return None
     
@@ -18,10 +26,12 @@ def perform_request(url, data, cookie_string):
 
     try:
         cookies_dict = parse_cookie(cookie_string) if cookie_string else None
+        headers = {'User-Agent': random.choice(user_agents)}
         
         response = requests.get(
             url_with_data, 
             cookies=cookies_dict,
+            headers=headers,
             timeout=20  
         )
         response.raise_for_status() 
@@ -31,10 +41,10 @@ def perform_request(url, data, cookie_string):
     return True, url_with_data, time.time() - start_time, None
 
 def main():
-    parser = argparse.ArgumentParser(description="Realiza una petición GET a múltiples URLs con diferentes datos.")
-    parser.add_argument("-u", "--urls", required=True, help="Archivo de texto con las URLs a las que se les realizará la petición GET.")
-    parser.add_argument("-d", "--data", required=True, help="Archivo de texto con los datos que se agregarán a las URLs.")
-    parser.add_argument("-c", "--cookie", help="Cookie a incluir en la petición GET (formato: 'nombre=valor; nombre2=valor2').")
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-u", "--urls", required=True)
+    parser.add_argument("-d", "--data", required=True)
+    parser.add_argument("-c", "--cookie")
     args = parser.parse_args()
 
     with open(args.urls) as file:
