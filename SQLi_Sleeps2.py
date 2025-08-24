@@ -32,13 +32,18 @@ def perform_request(url, data, cookie_string):
             url_with_data, 
             cookies=cookies_dict,
             headers=headers,
-            timeout=20  
+            timeout=30
         )
-        response.raise_for_status() 
+        response_time = time.time() - start_time
+        
+        if response.status_code == 404:
+            return None
+        
+        return url_with_data, response_time, response.status_code
+        
     except requests.exceptions.RequestException as e:
-        return False, url_with_data, time.time() - start_time, str(e)
-
-    return True, url_with_data, time.time() - start_time, None
+        response_time = time.time() - start_time
+        return url_with_data, response_time, str(e)
 
 def main():
     parser = argparse.ArgumentParser()
@@ -55,12 +60,17 @@ def main():
 
     for url in urls:
         for d in data:
-            success, url_with_data, response_time, error_message = perform_request(url, d, args.cookie)
+            result = perform_request(url, d, args.cookie)
 
-            if success and response_time <= 20:
-                print(f"\033[1;32mURL {url_with_data} - {response_time:.2f} segundos\033[0m")
-            else:
-                print(f"\033[1;31mURL {url_with_data} - {response_time:.2f} segundos - Error: {error_message}\033[0m")
+            if result is None:
+                continue
+
+            url_with_data, response_time, status = result
+
+            if response_time > 20:
+                print(f"\033[1;31mVULNERABLE: {url_with_data} - {response_time:.2f}s - Status: {status}\033[0m")
+            elif response_time <= 20:
+                print(f"\033[1;32mURL {url_with_data} - {response_time:.2f}s\033[0m")
 
 if __name__ == "__main__":
     main()
