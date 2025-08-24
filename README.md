@@ -14,6 +14,15 @@ options:
   -c COOKIE, --cookie COOKIE
                         Cookie a incluir en la petición GET.
 
+# Cookie simple
+python3 script.py -u urls.txt -d data.txt -c "session=abc123"
+
+# Múltiples cookies
+python3 script.py -u urls.txt -d data.txt -c "session=abc123; user_id=456"
+
+# Sin cookie
+python3 script.py -u urls.txt -d data.txt
+
 ```
 
 ```sh
